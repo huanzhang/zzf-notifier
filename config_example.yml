@@ -1,0 +1,12 @@
+tzgg_url: "http://www.bjjs.gov.cn/bjjs/fwgl/zzxspzf/tzgg/index.shtml"
+tzgg_host: "http://www.bjjs.gov.cn"
+db_file: "data.db"
+smtp:
+  address: "smtp.qq.com"
+  port: 587
+  user_name: "xxxxxxx@qq.com"
+  password: "xxxxxxxx"
+  authentication: "plain"
+  ssl: true
+recipients:
+  - "xxxx@yahoo.com"

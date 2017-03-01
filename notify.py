@@ -11,6 +11,16 @@ import argparse
 import smtplib
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
+import logging
+
+
+logger = logging.getLogger('zzf-notifier')
+hdlr = logging.FileHandler('notifier.log')
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+hdlr.setFormatter(formatter)
+logger.addHandler(hdlr)
+logger.setLevel(logging.INFO)
+
 
 CONFIG = yaml.load(file("config.yml", "r"))
 CONN = sqlite3.connect(CONFIG["db_file"], detect_types=sqlite3.PARSE_COLNAMES)
@@ -82,16 +92,20 @@ def main():
     if args.initialized:
         fetch_date = date(2016, 1, 1)
 
+    logger.info("Start to fetch tzggs")
     tzggs = fetch_all_tzgg()
+
     tzggs = map(parse_data_from_tzgg_html, tzggs)
     tzggs = filter(lambda x: is_tzgg_date_after_target(x, fetch_date), tzggs)
     tzggs.reverse()
+    logger.info("%s tzgg(s) to process" % len(tzggs))
 
     for tzgg in tzggs:
         tg = find_tzgg(tzgg["title"], tzgg["publish_date"])
         if not tg:
-            print u"发现新的公告: %s" % tzgg["title"]
+            logger.info(u"Found new tzgg: %s" % tzgg["title"])
             send_mail(tzgg)
+            logger.info("Email sent successfully")
             create_tzgg(tzgg["title"], tzgg["url"], tzgg["publish_date"])
 
     CONN.close()

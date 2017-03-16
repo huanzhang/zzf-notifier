@@ -64,7 +64,7 @@ def create_tzgg(title, url, publish_date):
 
 def send_mail(tzgg):
     fromaddr = CONFIG["smtp"]["user_name"]
-    toaddr = ";".join(CONFIG["recipients"])
+    toaddr = ",".join(CONFIG["recipients"])
     msg = MIMEMultipart()
     msg['From'] = fromaddr
     msg['To'] = toaddr
